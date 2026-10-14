@@ -125,6 +125,8 @@ docs/                       Architecture, scope, operations, and video notes
 
 The complete documentation set is in the [`docs/`](docs/) folder.
 
+> Note: The planning video may have occasional lag because of limitations with the phone used to record it. Thank you for your understanding.
+
 ## Deployment
 
 Deploy the Next.js app to Vercel, add the required environment variables in the Vercel project settings, and redeploy. Use mock mode for the self-contained review demo. The webhook handler is available at:
