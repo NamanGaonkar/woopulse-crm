@@ -11,13 +11,35 @@ import { MOCK_ORDERS } from '../../fixtures/orders';
 
 let customers: Customer[] = [...MOCK_CUSTOMERS];
 let orders: Order[] = [...MOCK_ORDERS];
-let messages: Message[] = [];
+
+function createDemoMessages(): Message[] {
+  return MOCK_CUSTOMERS.slice(0, 3).map((customer, index) => ({
+    id: `demo_msg_${index + 1}`,
+    customer_id: customer.id,
+    template: index === 0 ? 'winback' : 'vip_thankyou',
+    subject: index === 0
+      ? `We would love to welcome you back, ${customer.first_name}`
+      : `A thank-you for being with us, ${customer.first_name}`,
+    body: index === 0
+      ? `Hi ${customer.first_name},\n\nIt has been a while since your last order. We would love to welcome you back and help with your next purchase.\n\nWarm regards,\nThe WooPulse Team`
+      : `Hi ${customer.first_name},\n\nThank you for being a valued customer. We appreciate your continued support and would love to help with your next order.\n\nWarm regards,\nThe WooPulse Team`,
+    reason: index === 0
+      ? 'Demo win-back draft for review.'
+      : 'Demo VIP thank-you draft for review.',
+    status: 'draft',
+    created_by: 'agent',
+    created_at: new Date(Date.now() - index * 60_000).toISOString(),
+    agent_step: 'demo_seed',
+  }));
+}
+
+let messages: Message[] = createDemoMessages();
 
 // Reset helper used by tests to get a clean store without affecting other tests.
 export function resetInMemoryStore(): void {
   customers = [...MOCK_CUSTOMERS];
   orders = [...MOCK_ORDERS];
-  messages = [];
+  messages = createDemoMessages();
 }
 
 export function getInMemoryCustomers(): Customer[] {
