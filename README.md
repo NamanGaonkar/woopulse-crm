@@ -131,13 +131,7 @@ The complete documentation set is in the [`docs/`](docs/) folder.
 
 Live demo: [https://woopulse.vercel.app/](https://woopulse.vercel.app/)
 
-Deploy the Next.js app to Vercel, add the required environment variables in the Vercel project settings, and redeploy. Use mock mode for the self-contained review demo. The deployed webhook handler is available at:
-
-```text
-https://woopulse.vercel.app/api/webhooks/woocommerce
-```
-
-The webhook secret in WooCommerce must match `WOOCOMMERCE_WEBHOOK_SECRET`.
+Deploy the Next.js app to Vercel, add the required environment variables in the Vercel project settings, and redeploy. Use mock mode for the self-contained review demo. Webhook handling is implemented in the application API and requires `WOOCOMMERCE_WEBHOOK_SECRET` when connected to a WooCommerce store.
 
 ## Known Limitations
 
