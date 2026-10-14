@@ -1,6 +1,12 @@
  # WooPulse CRM
 WooPulse is a WooCommerce-connected CRM demo for customer data, order tracking, customer segmentation, and human-approved retention messaging.
 
+## Project Links
+
+- Live demo: [woopulse.vercel.app](https://woopulse.vercel.app/)
+- Portfolio: [naman-gaonkar.vercel.app](https://naman-gaonkar.vercel.app/)
+- GitHub profile: [github.com/NamanGaonkar](https://github.com/NamanGaonkar)
+
 ## Demo In 60 Seconds
 
 The project works offline by default. It includes realistic customer and order fixtures in `fixtures/`, so you do not need a WooCommerce store or API credentials to present the demo.
