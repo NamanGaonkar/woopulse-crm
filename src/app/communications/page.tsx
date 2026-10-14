@@ -54,14 +54,15 @@ type MessagePayload = {
 
 async function CommsContent({ status }: { status: string }) {
   await connection();
-  const messages = await communicationService.list({
-    status: status ? (status as 'draft' | 'approved' | 'sent' | 'rejected') : undefined,
-  });
+  const allMessages = await communicationService.list();
+  const messages = status
+    ? allMessages.filter((message) => message.status === status)
+    : allMessages;
 
   const counts = {
-    draft: messages.filter((m) => m.status === 'draft').length,
-    approved: messages.filter((m) => m.status === 'approved').length,
-    sent: messages.filter((m) => m.status === 'sent').length,
+    draft: allMessages.filter((m) => m.status === 'draft').length,
+    approved: allMessages.filter((m) => m.status === 'approved').length,
+    sent: allMessages.filter((m) => m.status === 'sent').length,
   };
 
   return (
