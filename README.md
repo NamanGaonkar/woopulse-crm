@@ -19,11 +19,11 @@ The sync button is the demo's ingestion action. In mock mode it simulates pullin
 - Dashboard KPIs, revenue, recent orders, and customer segment breakdown
 - Searchable customers with segments, tags, notes, lifetime value, and order history
 - Order list, status filters, detail pages, and status timelines
-- WooCommerce sync adapter with offline mock mode and live REST API mode
+- WooCommerce sync adapter with offline mock mode and a clearly isolated live-client extension point
 - WooCommerce webhook endpoint with HMAC-SHA256 signature verification
 - Communication drafts with draft -> approved -> sent human approval flow
-- Retention Agent with Gemini tool calling, live activity steps, validation, an eight-round cap, and deterministic fallback behavior
-- Vitest and Playwright test setup
+- Retention Agent with Gemini tool calling, activity steps, validation, an eight-round cap, and deterministic fallback behavior
+- Vitest and Playwright configuration for adding automated tests
 
 ## Quick Start
 
@@ -67,9 +67,9 @@ GEMINI_MODEL=gemini-3.8-flash
 
 The agent never sends messages automatically. It can create drafts and tags, but a human must approve a draft before simulated sending.
 
-### Live WooCommerce Mode
+### Live WooCommerce Extension Point
 
-To use a real WooCommerce store, configure the REST API credentials and set the sync mode to live:
+The client boundary and environment variables are prepared for a future live WooCommerce REST implementation:
 
 ```env
 NEXT_PUBLIC_SYNC_MODE=live
@@ -79,7 +79,7 @@ WOOCOMMERCE_CONSUMER_SECRET=cs_your_secret
 WOOCOMMERCE_WEBHOOK_SECRET=your_webhook_secret
 ```
 
-The live adapter uses WooCommerce REST API v3. If live credentials are missing, the sync route falls back to mock mode so the demo remains usable.
+The live-client boundary is defined, but live REST requests are not enabled in this demo build. Mock mode is the supported recording and review path.
 
 ## How Data Is Stored
 
@@ -98,6 +98,7 @@ This is intentionally suitable for a local hackathon demo, not production persis
 | `GET /api/dashboard` | Return CRM KPIs and recent orders |
 | `POST /api/agent` | Run the Retention Agent |
 | `GET /api/communications` | List communication drafts |
+| `POST /api/communications/[id]` | Approve, reject, or simulate-send a draft |
 
 ## Project Structure
 
@@ -120,13 +121,13 @@ docs/                       Architecture, scope, operations, and video notes
 
 - [Architecture](docs/ARCHITECTURE.md)
 - [Scope and assumptions](docs/SCOPE_AND_ASSUMPTIONS.md)
-- [Operations](docs/OPERATIONS.md)
-- [AI usage log](docs/AI_USAGE.md)
 - [Video notes](docs/VIDEO_NOTES.md)
+
+The complete documentation set is in the [`docs/`](docs/) folder.
 
 ## Deployment
 
-Deploy the Next.js app to Vercel, add the required environment variables in the Vercel project settings, and redeploy. Use mock mode for a self-contained review demo. For a live store, configure WooCommerce webhooks to call:
+Deploy the Next.js app to Vercel, add the required environment variables in the Vercel project settings, and redeploy. Use mock mode for the self-contained review demo. The webhook handler is available at:
 
 ```text
 https://your-vercel-domain.example.com/api/webhooks/woocommerce
@@ -138,5 +139,5 @@ The webhook secret in WooCommerce must match `WOOCOMMERCE_WEBHOOK_SECRET`.
 
 - In-memory data is reset when the server process or serverless instance is replaced.
 - Sending is simulated and does not deliver email.
-- The live WooCommerce adapter requires valid REST API credentials.
-- Unit test coverage and end-to-end coverage are still being expanded.
+- Live WooCommerce REST requests are an extension point and are not enabled in this demo build.
+- Test configuration exists, but automated test coverage is still being expanded.
