@@ -82,7 +82,7 @@ async function DashboardContent() {
                 <span className="w-20 text-sm text-muted">{label}</span>
                 <div className="flex-1 h-6 rounded-full bg-surface-2 overflow-hidden">
                   <div
-                    className="h-full rounded-full transition-all duration-500"
+                    className="segment-bar-fill h-full rounded-full"
                     style={{ width: `${pct}%`, backgroundColor: color }}
                   />
                 </div>
