@@ -1,8 +1,10 @@
 import { notFound } from 'next/navigation';
+import { connection } from 'next/server';
 import { Suspense } from 'react';
 import { Sidebar, Topbar } from '@/components/Layout';
 import { Table, TableHead, TableHeadCell, TableRow, TableCell, StatusPill, SegmentChip, Avatar, Skeleton } from '@/components/ui';
 import { ArrowLeft, Clock, CreditCard, Package, User } from 'lucide-react';
+import { orderService } from '@/services';
 
 export const instant = false;
 
@@ -71,17 +73,9 @@ type OrderPayload = {
 
 async function OrderDetailContent({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
+  await connection();
 
-  let order: OrderPayload | null = null;
-  try {
-    const res = await fetch(`/api/orders/${encodeURIComponent(id)}`, { cache: 'no-store' });
-    if (res.ok) {
-      const json = await res.json();
-      if (json.ok) order = json.order as OrderPayload;
-    }
-  } catch {
-    // fall through to 404
-  }
+  const order = await orderService.getById(id);
 
   if (!order) {
     notFound();
