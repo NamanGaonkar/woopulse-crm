@@ -16,7 +16,7 @@ export function ActionButtons({ id, status }: { id: string; status: string }) {
       });
       if (res.ok) {
         const destination = action === 'approve' ? 'approved' : action === 'reject' ? 'rejected' : 'sent';
-        window.location.assign(`/communications?status=${destination}`);
+        window.location.assign(`/communications?status=${destination}&updatedId=${encodeURIComponent(id)}&updatedStatus=${destination}`);
         return;
       }
       const json = await res.json().catch(() => null);

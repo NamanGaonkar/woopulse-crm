@@ -1,6 +1,13 @@
+'use client';
+
 import Link from 'next/link';
 import {
+  Children,
+  isValidElement,
+  useEffect,
+  useState,
   type ButtonHTMLAttributes,
+  type ChangeEvent,
   type InputHTMLAttributes,
   type SelectHTMLAttributes,
   type ReactNode,
@@ -57,15 +64,62 @@ Input.displayName = 'Input';
 // ---- Select -----------------------------------------------------------------
 
 export const Select = forwardRef<HTMLSelectElement, SelectHTMLAttributes<HTMLSelectElement>>(
-  function Select({ className = '', children, ...props }, ref) {
+  function Select({ className = '', children, value, onChange, onClick: selectOnClick, disabled, ...props }, ref) {
+    const [open, setOpen] = useState(false);
+    const selectedValue = String(value ?? '');
+    const options = Children.toArray(children).flatMap((child) => {
+      if (!isValidElement<{ value?: string; children?: ReactNode }>(child)) return [];
+      return [{ value: String(child.props.value ?? ''), label: child.props.children }];
+    });
+    const selected = options.find((option) => option.value === selectedValue) ?? options[0];
+
+    useEffect(() => {
+      function close(event: MouseEvent) {
+        if (!(event.target as HTMLElement).closest('.select-control-wrap')) setOpen(false);
+      }
+      document.addEventListener('mousedown', close);
+      return () => document.removeEventListener('mousedown', close);
+    }, []);
+
+    function choose(nextValue: string) {
+      onChange?.({ target: { value: nextValue } } as ChangeEvent<HTMLSelectElement>);
+      setOpen(false);
+    }
+
     return (
-      <select
-        ref={ref}
-        className={`select-control flex h-10 w-full rounded-md border border-border bg-surface px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-background disabled:cursor-not-allowed disabled:opacity-50 transition-[border-color,box-shadow,background-color,transform] duration-200 hover:border-primary/50 focus:scale-[1.01] active:scale-[0.99] appearance-none cursor-pointer ${className}`}
-        {...props}
-      >
-        {children}
-      </select>
+      <div className="select-control-wrap relative">
+        <button
+          ref={ref as unknown as React.Ref<HTMLButtonElement>}
+          type="button"
+          disabled={disabled}
+          aria-haspopup="listbox"
+          aria-expanded={open}
+          onClick={(event) => {
+            selectOnClick?.(event as unknown as React.MouseEvent<HTMLSelectElement>);
+            setOpen((current) => !current);
+          }}
+          className={`select-control flex h-10 w-full items-center justify-between rounded-md border border-border bg-surface px-3 py-2 text-left text-sm text-foreground transition-[border-color,box-shadow,background-color,transform] duration-200 hover:border-primary/50 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-background focus:scale-[1.01] active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-50 ${className}`}
+        >
+          <span className="truncate">{selected?.label}</span>
+          <span className={`ml-3 text-xs text-muted transition-transform ${open ? 'rotate-180' : ''}`}>⌄</span>
+        </button>
+        {open && (
+          <div className="absolute z-50 mt-2 max-h-64 w-full overflow-auto rounded-md border border-border bg-surface p-1 shadow-xl" role="listbox">
+            {options.map((option) => (
+              <button
+                key={option.value}
+                type="button"
+                role="option"
+                aria-selected={option.value === selectedValue}
+                onClick={() => choose(option.value)}
+                className={`block w-full rounded px-3 py-2 text-left text-sm transition-colors hover:bg-surface-2 ${option.value === selectedValue ? 'bg-primary/10 text-primary' : 'text-foreground'}`}
+              >
+                {option.label}
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
     );
   },
 );

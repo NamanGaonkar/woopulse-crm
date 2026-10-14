@@ -11,9 +11,9 @@ export const instant = false;
 export default async function CommunicationsPage({
   searchParams,
 }: {
-  searchParams: Promise<{ status?: string }>;
+  searchParams: Promise<{ status?: string; updatedId?: string; updatedStatus?: string }>;
 }) {
-  const { status = '' } = await searchParams;
+  const { status = '', updatedId, updatedStatus } = await searchParams;
 
   return (
     <div className="flex min-h-screen">
@@ -22,7 +22,7 @@ export default async function CommunicationsPage({
         <Topbar title="Communications" />
         <div className="flex-1 p-6 space-y-6 overflow-auto">
           <Suspense fallback={<CommsSkeleton />}>
-            <CommsContent status={status} />
+            <CommsContent status={status} updatedId={updatedId} updatedStatus={updatedStatus} />
           </Suspense>
         </div>
       </main>
@@ -52,9 +52,22 @@ type MessagePayload = {
   sent_at?: string;
 };
 
-async function CommsContent({ status }: { status: string }) {
+async function CommsContent({
+  status,
+  updatedId,
+  updatedStatus,
+}: {
+  status: string;
+  updatedId?: string;
+  updatedStatus?: string;
+}) {
   await connection();
-  const allMessages = await communicationService.list();
+  const storedMessages = await communicationService.list();
+  const allMessages = storedMessages.map((message) => (
+    message.id === updatedId && updatedStatus
+      ? { ...message, status: updatedStatus as MessagePayload['status'] }
+      : message
+  ));
   const messages = status
     ? allMessages.filter((message) => message.status === status)
     : allMessages;
