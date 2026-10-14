@@ -4,6 +4,7 @@ import { Sidebar, Topbar } from '@/components/Layout';
 import { StatusPill, Skeleton } from '@/components/ui';
 import { ActionButtons } from './ActionButtons';
 import { ArrowLeft, User, Sparkles, Send, FileText, Clock } from 'lucide-react';
+import { communicationService } from '@/services';
 
 export const instant = false;
 
@@ -44,19 +45,7 @@ type MessagePayload = {
 
 async function MessageDetailContent({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-
-  let message: MessagePayload | null = null;
-  try {
-    const res = await fetch(`/api/communications`, { cache: 'no-store' });
-    if (res.ok) {
-      const json = await res.json();
-      if (json.ok) {
-        message = (json.communications as MessagePayload[]).find((m) => m.id === id) ?? null;
-      }
-    }
-  } catch {
-    // fall through to 404
-  }
+  const message = await communicationService.getById(id);
 
   if (!message) {
     notFound();

@@ -286,6 +286,10 @@ export type DraftMessage = Omit<Message, 'id' | 'created_at' | 'sent_at'> & {
 };
 
 export const communicationService = {
+  async getById(id: string): Promise<Message | undefined> {
+    return messageRepository.findById(id);
+  },
+
   async applyTemplate(
     template: CommunicationTemplate,
     customer: Customer,
