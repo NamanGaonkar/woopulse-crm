@@ -1,11 +1,9 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import { Send, Check, X, Loader2 } from 'lucide-react';
 
 export function ActionButtons({ id, status }: { id: string; status: string }) {
-  const router = useRouter();
   const [busy, setBusy] = useState(false);
 
   async function act(action: 'approve' | 'reject' | 'send') {
@@ -18,8 +16,7 @@ export function ActionButtons({ id, status }: { id: string; status: string }) {
       });
       if (res.ok) {
         const destination = action === 'approve' ? 'approved' : action === 'reject' ? 'rejected' : 'sent';
-        router.push(`/communications?status=${destination}`);
-        router.refresh();
+        window.location.assign(`/communications?status=${destination}`);
         return;
       }
       const json = await res.json().catch(() => null);

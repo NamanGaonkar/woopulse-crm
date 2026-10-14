@@ -61,7 +61,7 @@ export const Select = forwardRef<HTMLSelectElement, SelectHTMLAttributes<HTMLSel
     return (
       <select
         ref={ref}
-        className={`flex h-10 w-full rounded-md border border-border bg-surface px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-background disabled:cursor-not-allowed disabled:opacity-50 transition-[border-color,box-shadow,background-color,transform] duration-200 hover:border-primary/50 focus:scale-[1.01] active:scale-[0.99] appearance-none cursor-pointer ${className}`}
+        className={`select-control flex h-10 w-full rounded-md border border-border bg-surface px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-background disabled:cursor-not-allowed disabled:opacity-50 transition-[border-color,box-shadow,background-color,transform] duration-200 hover:border-primary/50 focus:scale-[1.01] active:scale-[0.99] appearance-none cursor-pointer ${className}`}
         {...props}
       >
         {children}

@@ -38,6 +38,15 @@ body {
   color: var(--color-foreground);
 }
 
+.select-control {
+  color-scheme: dark;
+}
+
+.select-control option {
+  background: var(--color-surface);
+  color: var(--color-foreground);
+}
+
 main {
   animation: page-enter 220ms ease-out both;
 }
